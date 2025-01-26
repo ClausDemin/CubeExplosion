@@ -6,11 +6,9 @@ namespace Assets.CodeBase.ExplosiveSpore.Interfaces
     public interface ISporeView
     {
         public event Action<ISporeView> Clicked;
-        public event Action<GameObject> Exploded;
+        public void PlayEffects();
 
-        public Vector3 Position { get; }
-        public Vector3 Scale { get; }
-        public void Explode();
-
+        public float ExplosionRadius { get; }
+        public float ExplosionForce { get; }
     }
 }

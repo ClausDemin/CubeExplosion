@@ -146,6 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e87dff6240ac448928badfe82c1fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _explosionVFX: {fileID: 621486470950988470, guid: 025c75910704cec439b7c7e9c9fa9fb6, type: 3}
-  _explosionRadius: 20
-  _explosionForce: 1000
+  _explosionVFX: {fileID: 8653713205617897592, guid: 025c75910704cec439b7c7e9c9fa9fb6, type: 3}
+  <ExplosionRadius>k__BackingField: 20
+  <ExplosionForce>k__BackingField: 1000

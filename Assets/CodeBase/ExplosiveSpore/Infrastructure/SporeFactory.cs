@@ -1,5 +1,4 @@
 ﻿using Assets.CodeBase.ExplosiveSpore.Interfaces;
-using Assets.Scripts.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +7,7 @@ namespace Assets.CodeBase
 {
     public class SporeFactory: MonoBehaviour
     {
-        [SerializeField] private GameObject _sporePrefab;
+        [SerializeField] private Spore _sporePrefab;
         [SerializeField] private List<Vector3> _prewarmedPositions = new();
 
         private ISporeRepository _repository;
@@ -24,16 +23,14 @@ namespace Assets.CodeBase
 
         public GameObject Create(Vector3 position, Vector3 scale, Quaternion rotation, int generation) 
         {
-            GameObject sporeInstance = Instantiate(_sporePrefab, position, rotation);
+            GameObject sporeInstance = Instantiate(_sporePrefab.gameObject, position, rotation);
 
             sporeInstance.transform.localScale = scale;
 
             if (sporeInstance.TryGetComponent(out ISporeView spore)) 
             {
-                ISporeBehavior sporeBehavior = new SporeBehavior(generation);
+                ISporeBehavior sporeBehavior = new SporeBehavior(sporeInstance.transform, spore.ExplosionRadius, spore.ExplosionForce, generation);
                 _repository.Add(sporeInstance, spore, sporeBehavior);
-
-                SetRandomColor(sporeInstance);
 
                 InstanceCreated?.Invoke(spore);
             } 
@@ -62,21 +59,6 @@ namespace Assets.CodeBase
                 {
                     Create(position, _sporePrefab.transform.localScale, _sporePrefab.transform.rotation, initialGeneration);
                 }
-            }
-        }
-
-        private void SetRandomColor(GameObject instance) 
-        {
-            if (instance.TryGetComponent<MeshRenderer>(out var renderer)) 
-            { 
-                float randomRed = UserUtils.GetRandomFloat();
-                float randomBlue = UserUtils.GetRandomFloat();
-                float randomGreen = UserUtils.GetRandomFloat();
-                float alpha = 1;
-
-                Color cubeColor = new Color(randomRed, randomGreen, randomBlue, alpha);
-
-                renderer.material.SetColor("_Color", cubeColor);
             }
         }
 

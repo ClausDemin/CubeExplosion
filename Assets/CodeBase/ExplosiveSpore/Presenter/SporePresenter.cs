@@ -1,4 +1,5 @@
 ﻿using Assets.CodeBase.ExplosiveSpore.Interfaces;
+using Assets.CodeBase.ExplosiveSpore.View;
 using Assets.Scripts.Utils;
 using System;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
     public class SporePresenter : ISporePresenter
     {
         private SporeFactory _factory;
+        private ColorChanger _colorChanger;
         private ISporeRepository _repository;
 
         private float _baseDivisionChance;
@@ -39,6 +41,8 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
             _minChildCount = minChildCount;
             _maxChildCount = maxChildCount;
 
+            _colorChanger = new ColorChanger();
+
             _factory.InstanceCreated += OnInstanceCreated;
         }
 
@@ -52,9 +56,10 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
                 if (IsDivided(divideChance))
                 {
-                    CreateChildren(sporeView);
+                    Divide(sporeView);
 
-                    sporeView.Explode();
+                    sporeBehavior.Explode();
+                    sporeView.PlayEffects();
                 }
 
                 _factory.Destroy(sporeView);
@@ -68,10 +73,25 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
         private void OnInstanceCreated(ISporeView sporeView)
         {
+            SetRandomColor(sporeView);
+
             sporeView.Clicked += Explode;
         }
 
-        private void CreateChildren(ISporeView sporeView, float spreadInnerRadius = 3, float spreadOuterRadius = 5)
+        private void SetRandomColor(ISporeView sporeView)
+        {
+            GameObject instance = _repository.GetInstance(sporeView);
+
+            if (instance != null)
+            {
+                if (instance.TryGetComponent<MeshRenderer>(out var renderer))
+                {
+                    _colorChanger.SetRandomColor(renderer);
+                }
+            }
+        }
+
+        private void Divide(ISporeView sporeView, float spreadInnerRadius = 3, float spreadOuterRadius = 5)
         {
             int count = UserUtils.GetRandomInt(_minChildCount, _maxChildCount);
 
@@ -83,7 +103,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
             for (int i = 0; i < count; i++)
             {
-                var position = UserUtils.GetRandomVector(sporeView.Position, spreadInnerRadius, spreadOuterRadius);
+                Vector3 position = UserUtils.GetRandomVector(sporeBehavior.Position, spreadInnerRadius, spreadOuterRadius);
 
                 _factory.Create(position, scale, Quaternion.identity, generation);
             }
