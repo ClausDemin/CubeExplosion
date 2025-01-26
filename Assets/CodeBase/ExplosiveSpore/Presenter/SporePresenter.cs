@@ -11,7 +11,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
         private ISporeRepository _repository;
 
         private float _baseDivisionChance;
-        private float _baseScale;
+        private Vector3 _baseScale;
         private float _divisionChanceFactor;
         private float _scaleFactor;
         private int _minChildCount;
@@ -21,8 +21,8 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
             (
                 SporeFactory factory, 
                 ISporeRepository repository, 
-                float baseDivisionChance, 
-                float baseScale, 
+                float baseDivisionChance,
+                Vector3 baseScale, 
                 float divisionChanceFactor,
                 float scaleFactor,
                 int minChildCount,
@@ -79,7 +79,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
             int generation = sporeBehavior.Generation + 1;
 
-            Vector3 scale = sporeView.Scale * (float)(_baseScale * Math.Pow(_scaleFactor, generation));
+            Vector3 scale =  _baseScale * (float) Math.Pow(_scaleFactor, generation);
 
             for (int i = 0; i < count; i++)
             {

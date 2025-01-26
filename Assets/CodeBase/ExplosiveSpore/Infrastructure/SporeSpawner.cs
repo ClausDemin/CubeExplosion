@@ -7,7 +7,6 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
     public class SporeSpawner: MonoBehaviour
     {
         [SerializeField, Range(0, 1)] private float _baseDivisionChance;
-        [SerializeField] private float _baseScale;
         [SerializeField] private float _divisionChanceFactor;
         [SerializeField] private float _scaleFactor;
         [SerializeField] private int _minChildCount;
@@ -28,7 +27,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
                     _sporeFactory, 
                     sporeRepository,
                     _baseDivisionChance,
-                    _baseScale,
+                    _sporeFactory.BaseScale,
                     _divisionChanceFactor,
                     _scaleFactor,
                     _minChildCount,

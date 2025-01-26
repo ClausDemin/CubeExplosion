@@ -15,6 +15,8 @@ namespace Assets.CodeBase
 
         public event Action<ISporeView> InstanceCreated;
 
+        public Vector3 BaseScale => GetBaseScale();
+
         private void Start()
         {
             CreatePrewarmedInstances();
@@ -52,13 +54,13 @@ namespace Assets.CodeBase
             _repository = repository;
         }
 
-        private void CreatePrewarmedInstances()
+        private void CreatePrewarmedInstances(int initialGeneration = 0)
         {
             if (_prewarmedPositions.Count > 0)
             {
                 foreach (var position in _prewarmedPositions)
                 {
-                    Create(position, _sporePrefab.transform.localScale, _sporePrefab.transform.rotation, 0);
+                    Create(position, _sporePrefab.transform.localScale, _sporePrefab.transform.rotation, initialGeneration);
                 }
             }
         }
@@ -76,6 +78,16 @@ namespace Assets.CodeBase
 
                 renderer.material.SetColor("_Color", cubeColor);
             }
+        }
+
+        private Vector3 GetBaseScale() 
+        {
+            if (_sporePrefab == null) 
+            { 
+                return Vector3.zero;
+            }
+
+            return _sporePrefab.transform.localScale;
         }
     }
 }
