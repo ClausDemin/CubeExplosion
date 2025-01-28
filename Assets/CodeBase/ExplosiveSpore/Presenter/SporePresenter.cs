@@ -2,6 +2,7 @@
 using Assets.CodeBase.ExplosiveSpore.View;
 using Assets.Scripts.Utils;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.CodeBase.ExplosiveSpore.Presenter
@@ -56,9 +57,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
                 if (IsDivided(divideChance))
                 {
-                    Divide(sporeView);
-
-                    sporeBehavior.Explode();
+                    sporeBehavior.Explode(CreateChildren(sporeView));
                     sporeView.PlayEffects();
                 }
 
@@ -91,22 +90,23 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
             }
         }
 
-        private void Divide(ISporeView sporeView, float spreadInnerRadius = 3, float spreadOuterRadius = 5)
+        private List<GameObject> CreateChildren(ISporeView sporeView, float spreadInnerRadius = 3, float spreadOuterRadius = 5)
         {
-            int count = UserUtils.GetRandomInt(_minChildCount, _maxChildCount);
-
             ISporeBehavior sporeBehavior = _repository.GetBehavior(sporeView);
+            List<GameObject> children = new();
 
+            int count = UserUtils.GetRandomInt(_minChildCount, _maxChildCount);
             int generation = sporeBehavior.Generation + 1;
-
             Vector3 scale =  _baseScale * (float) Math.Pow(_scaleFactor, generation);
 
             for (int i = 0; i < count; i++)
             {
                 Vector3 position = UserUtils.GetRandomVector(sporeBehavior.Position, spreadInnerRadius, spreadOuterRadius);
 
-                _factory.Create(position, scale, Quaternion.identity, generation);
+                children.Add(_factory.Create(position, scale, Quaternion.identity, generation));
             }
+
+            return children;
         }
     }
 }

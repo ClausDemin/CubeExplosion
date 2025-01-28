@@ -1,4 +1,5 @@
 using Assets.CodeBase.ExplosiveSpore.Interfaces;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,13 +26,21 @@ public class SporeBehavior : ISporeBehavior
 
     public void Explode()
     {
-        foreach (Rigidbody body in GetObjectsInRadius())
+        foreach (Rigidbody body in GetExplodableObjects())
         {
             body.AddExplosionForce(_explosionForce, Position, _explosionRadius);
         }
     }
 
-    private List<Rigidbody> GetObjectsInRadius()
+    public void Explode(List<GameObject> gameObjects)
+    {
+        foreach (Rigidbody body in GetExplodableObjects(gameObjects))
+        {
+            body.AddExplosionForce(_explosionForce, Position, _explosionRadius);
+        }
+    }
+
+    private List<Rigidbody> GetExplodableObjects()
     {
         Collider[] hits = Physics.OverlapSphere(Position, _explosionRadius);
 
@@ -42,6 +51,24 @@ public class SporeBehavior : ISporeBehavior
             if (hit.attachedRigidbody != null)
             {
                 objects.Add(hit.attachedRigidbody);
+            }
+        }
+
+        return objects;
+    }
+
+    private List<Rigidbody> GetExplodableObjects(List<GameObject> gameObjects)
+    {
+        List<Rigidbody> objects = new List<Rigidbody>();
+
+        foreach (var gameObject in gameObjects)
+        {
+            if (gameObject.TryGetComponent<Rigidbody>(out var rigidbody))
+            {
+                if (UserUtils.GetDistanceBetween(rigidbody.transform.position, Position) <= _explosionRadius) 
+                {
+                    objects.Add(rigidbody);
+                }
             }
         }
 

@@ -9,7 +9,6 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
         private Dictionary<ISporeView, ISporeBehavior> _spores;
         private Dictionary<ISporeView, GameObject> _instances;
 
-
         public SporeRepository() 
         {
             _spores = new();

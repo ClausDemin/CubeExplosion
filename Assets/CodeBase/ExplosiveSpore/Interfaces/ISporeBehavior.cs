@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.CodeBase.ExplosiveSpore.Interfaces
 {
@@ -8,5 +9,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Interfaces
         public Vector3 Position { get; }
         public Vector3 Scale { get; }
         public void Explode();
+
+        public void Explode(List<GameObject> gameObjects);
     }
 }

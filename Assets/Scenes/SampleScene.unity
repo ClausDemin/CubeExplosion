@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c04a9afbe263d1449a3f92baee366bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sporePrefab: {fileID: 3061256320775882242, guid: af260a091f9812640b0e38fa2f081777, type: 3}
+  _sporePrefab: {fileID: 2929259584493941205, guid: af260a091f9812640b0e38fa2f081777, type: 3}
   _prewarmedPositions:
   - {x: 20, y: 1, z: 20}
   - {x: 25, y: 1, z: 20}
