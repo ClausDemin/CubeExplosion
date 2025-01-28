@@ -12,9 +12,9 @@ namespace Assets.CodeBase.ExplosiveSpore.View
             float randomGreen = UserUtils.GetRandomFloat();
             float alpha = 1;
 
-            Color cubeColor = new Color(randomRed, randomGreen, randomBlue, alpha);
+            Color randomColor = new Color(randomRed, randomGreen, randomBlue, alpha);
 
-            renderer.material.SetColor("_Color", cubeColor);
+            renderer.material.color = randomColor;
         }
     }
 }

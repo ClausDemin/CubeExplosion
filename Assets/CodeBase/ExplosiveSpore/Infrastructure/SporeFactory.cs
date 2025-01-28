@@ -23,27 +23,30 @@ namespace Assets.CodeBase
 
         public GameObject Create(Vector3 position, Vector3 scale, Quaternion rotation, int generation) 
         {
-            GameObject sporeInstance = Instantiate(_sporePrefab.gameObject, position, rotation);
+            GameObject instance = Instantiate(_sporePrefab.gameObject, position, rotation);
 
-            sporeInstance.transform.localScale = scale;
-
-            if (sporeInstance.TryGetComponent(out ISporeView spore)) 
+            if (instance.TryGetComponent<Spore>(out var sporeInstance)) 
             {
-                ISporeBehavior sporeBehavior = new SporeBehavior(sporeInstance.transform, spore.ExplosionRadius, spore.ExplosionForce, generation);
-                _repository.Add(sporeInstance, spore, sporeBehavior);
+                sporeInstance.transform.localScale = scale;
 
-                InstanceCreated?.Invoke(spore);
-            } 
+                if (sporeInstance.TryGetComponent(out ISporeView spore))
+                {
+                    IExploder sporeBehavior = new Exploder(spore.ExplosionRadius, spore.ExplosionForce, generation);
+                    _repository.Add(sporeInstance, spore, sporeBehavior);
 
-            return sporeInstance;
+                    InstanceCreated?.Invoke(spore);
+                }
+            }
+
+            return instance;
         }
 
         public void Destroy(ISporeView view) 
         { 
-            GameObject instance = _repository.GetInstance(view);
+            Spore instance = _repository.GetInstance(view);
             _repository.Remove(view);
 
-            Destroy(instance);
+            Destroy(instance.gameObject);
         }
 
         public void Init(ISporeRepository repository) 

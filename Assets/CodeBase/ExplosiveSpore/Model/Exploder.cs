@@ -3,17 +3,13 @@ using Assets.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SporeBehavior : ISporeBehavior
+public class Exploder : IExploder
 {
-    private Transform _bearer;
-
     private float _explosionRadius;
     private float _explosionForce;
 
-    public SporeBehavior(Transform bearer, float explosionRadius, float explosionForce, int generation) 
+    public Exploder(float explosionRadius, float explosionForce, int generation) 
     {
-        _bearer = bearer;
-
         _explosionRadius = explosionRadius;
         _explosionForce = explosionForce;
 
@@ -21,28 +17,26 @@ public class SporeBehavior : ISporeBehavior
     }
 
     public int Generation { get; }
-    public Vector3 Position => _bearer.transform.position;
-    public Vector3 Scale => _bearer.transform.localScale;
 
-    public void Explode()
+    public void Explode(Vector3 position)
     {
-        foreach (Rigidbody body in GetExplodableObjects())
+        foreach (Rigidbody body in GetExplodableObjects(position))
         {
-            body.AddExplosionForce(_explosionForce, Position, _explosionRadius);
+            body.AddExplosionForce(_explosionForce, position, _explosionRadius);
         }
     }
 
-    public void Explode(List<GameObject> gameObjects)
+    public void Explode(List<GameObject> gameObjects, Vector3 position)
     {
-        foreach (Rigidbody body in GetExplodableObjects(gameObjects))
+        foreach (Rigidbody body in GetExplodableObjects(gameObjects, position))
         {
-            body.AddExplosionForce(_explosionForce, Position, _explosionRadius);
+            body.AddExplosionForce(_explosionForce, position, _explosionRadius);
         }
     }
 
-    private List<Rigidbody> GetExplodableObjects()
+    private List<Rigidbody> GetExplodableObjects(Vector3 position)
     {
-        Collider[] hits = Physics.OverlapSphere(Position, _explosionRadius);
+        Collider[] hits = Physics.OverlapSphere(position, _explosionRadius);
 
         List<Rigidbody> objects = new List<Rigidbody>();
 
@@ -57,7 +51,7 @@ public class SporeBehavior : ISporeBehavior
         return objects;
     }
 
-    private List<Rigidbody> GetExplodableObjects(List<GameObject> gameObjects)
+    private List<Rigidbody> GetExplodableObjects(List<GameObject> gameObjects, Vector3 position)
     {
         List<Rigidbody> objects = new List<Rigidbody>();
 
@@ -65,7 +59,7 @@ public class SporeBehavior : ISporeBehavior
         {
             if (gameObject.TryGetComponent<Rigidbody>(out var rigidbody))
             {
-                if (UserUtils.GetDistanceBetween(rigidbody.transform.position, Position) <= _explosionRadius) 
+                if (UserUtils.GetDistanceBetween(rigidbody.transform.position, position) <= _explosionRadius) 
                 {
                     objects.Add(rigidbody);
                 }

@@ -1,4 +1,5 @@
-﻿using Assets.CodeBase.ExplosiveSpore.Interfaces;
+﻿using Assets.CodeBase.ExplosiveSpore.Infrastructure;
+using Assets.CodeBase.ExplosiveSpore.Interfaces;
 using Assets.CodeBase.ExplosiveSpore.View;
 using Assets.Scripts.Utils;
 using System;
@@ -9,6 +10,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 {
     public class SporePresenter : ISporePresenter
     {
+        private SporeSpawner _sporeSpawner;
         private SporeFactory _factory;
         private ColorChanger _colorChanger;
         private ISporeRepository _repository;
@@ -20,27 +22,14 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
         private int _minChildCount;
         private int _maxChildCount;
 
-        public SporePresenter
-            (
-                SporeFactory factory, 
-                ISporeRepository repository, 
-                float baseDivisionChance,
-                Vector3 baseScale, 
-                float divisionChanceFactor,
-                float scaleFactor,
-                int minChildCount,
-                int maxChildCount
-            )
+        public SporePresenter(SporeSpawner spawner, SporeFactory factory, ISporeRepository repository, float baseDivisionChance,float divisionChanceFactor)
         {
+            _sporeSpawner = spawner;
             _factory = factory;
             _repository = repository;
 
             _baseDivisionChance = baseDivisionChance;
-            _baseScale = baseScale;
             _divisionChanceFactor = divisionChanceFactor;
-            _scaleFactor = scaleFactor;
-            _minChildCount = minChildCount;
-            _maxChildCount = maxChildCount;
 
             _colorChanger = new ColorChanger();
 
@@ -49,15 +38,16 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
         public void Explode(ISporeView sporeView)
         {
-            ISporeBehavior sporeBehavior = _repository.GetBehavior(sporeView);
+            IExploder exploder = _repository.GetBehavior(sporeView);
+            Spore sporeInstance = _repository.GetInstance(sporeView);
 
-            if (sporeBehavior != null)
+            if (exploder != null)
             {
-                float divideChance = _baseDivisionChance * (float) Math.Pow(_divisionChanceFactor, sporeBehavior.Generation);
+                float divideChance = _baseDivisionChance * (float) Math.Pow(_divisionChanceFactor, exploder.Generation);
 
                 if (IsDivided(divideChance))
                 {
-                    sporeBehavior.Explode(CreateChildren(sporeView));
+                    exploder.Explode(_sporeSpawner.CreateChildren(sporeView), sporeInstance.transform.position);
                     sporeView.PlayEffects();
                 }
 
@@ -79,7 +69,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
 
         private void SetRandomColor(ISporeView sporeView)
         {
-            GameObject instance = _repository.GetInstance(sporeView);
+            Spore instance = _repository.GetInstance(sporeView);
 
             if (instance != null)
             {
@@ -88,25 +78,6 @@ namespace Assets.CodeBase.ExplosiveSpore.Presenter
                     _colorChanger.SetRandomColor(renderer);
                 }
             }
-        }
-
-        private List<GameObject> CreateChildren(ISporeView sporeView, float spreadInnerRadius = 3, float spreadOuterRadius = 5)
-        {
-            ISporeBehavior sporeBehavior = _repository.GetBehavior(sporeView);
-            List<GameObject> children = new();
-
-            int count = UserUtils.GetRandomInt(_minChildCount, _maxChildCount);
-            int generation = sporeBehavior.Generation + 1;
-            Vector3 scale =  _baseScale * (float) Math.Pow(_scaleFactor, generation);
-
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 position = UserUtils.GetRandomVector(sporeBehavior.Position, spreadInnerRadius, spreadOuterRadius);
-
-                children.Add(_factory.Create(position, scale, Quaternion.identity, generation));
-            }
-
-            return children;
         }
     }
 }

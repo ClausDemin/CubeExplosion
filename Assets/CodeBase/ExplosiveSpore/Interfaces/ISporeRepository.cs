@@ -5,12 +5,12 @@ namespace Assets.CodeBase.ExplosiveSpore.Interfaces
 {
     public interface ISporeRepository
     {
-        public void Add(GameObject instance, ISporeView view, ISporeBehavior model);
+        public void Add(Spore instance, ISporeView view, IExploder model);
 
         public void Remove(ISporeView view);
 
-        public ISporeBehavior GetBehavior(ISporeView view);
+        public IExploder GetBehavior(ISporeView view);
 
-        public GameObject GetInstance(ISporeView view);
+        public Spore GetInstance(ISporeView view);
     }
 }

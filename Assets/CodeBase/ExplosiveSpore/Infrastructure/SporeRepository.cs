@@ -6,8 +6,8 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
 {
     public class SporeRepository : ISporeRepository
     {
-        private Dictionary<ISporeView, ISporeBehavior> _spores;
-        private Dictionary<ISporeView, GameObject> _instances;
+        private Dictionary<ISporeView, IExploder> _spores;
+        private Dictionary<ISporeView, Spore> _instances;
 
         public SporeRepository() 
         {
@@ -15,7 +15,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
             _instances = new();
         }
 
-        public void Add(GameObject instance, ISporeView view, ISporeBehavior model) 
+        public void Add(Spore instance, ISporeView view, IExploder model) 
         { 
             _spores.Add(view, model);
             _instances.Add(view, instance);
@@ -32,7 +32,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
             _instances.Remove(view);
         }
 
-        public GameObject GetInstance(ISporeView view) 
+        public Spore GetInstance(ISporeView view) 
         {
             if (_instances.ContainsKey(view) == false)
             {
@@ -42,7 +42,7 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
             return _instances[view]; 
         }
 
-        public ISporeBehavior GetBehavior(ISporeView view) 
+        public IExploder GetBehavior(ISporeView view) 
         {
             if (_spores.ContainsKey(view) == false) 
             {
