@@ -14,7 +14,6 @@ namespace Assets.CodeBase.ExplosiveSpore.Infrastructure
 
         [SerializeField] private SporeFactory _sporeFactory;
 
-
         private void Awake()
         {
             ISporeRepository sporeRepository = new SporeRepository();
