@@ -28,8 +28,6 @@ namespace Assets.CodeBase.ExplosiveCubes.View
         private Vector3 _baseScale;
         private int _initialGeneration;
 
-        public event Action<IExplosiveObject> InstanceCreated;
-
         public bool IsInitialized { get; private set; }
 
         private void Start()
@@ -82,8 +80,6 @@ namespace Assets.CodeBase.ExplosiveCubes.View
                     IExplosiveObjectPresenter presenter = _presenterFactory.Create(this, separableEntity);
 
                     explosiveObject.Init(presenter);
-
-                    InstanceCreated?.Invoke(explosiveObject);
 
                     return explosiveObject;
                 }
